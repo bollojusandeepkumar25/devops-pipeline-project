@@ -33,10 +33,8 @@ jobs:
 
       # Step 5: Login to DockerHub
       - name: Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u bollojusandeepkumar25 --password-stdin
 
       # Step 6: Build and Push Docker image
       - name: Build and Push Docker image
@@ -44,4 +42,4 @@ jobs:
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/devops-pipeline-project:latest
+          tags: bollojusandeepkumar25/devops-pipeline-project:latest
