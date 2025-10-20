@@ -30,10 +30,10 @@ jobs:
 
       # Log in to DockerHub
       - name: Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: bollojusandeepkumar25
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+        env:
+          DOCKER_USERNAME: bollojusandeepkumar25
+          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
 
       # Build and push Docker image
       - name: Build and Push Docker Image
