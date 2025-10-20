@@ -41,5 +41,8 @@ jobs:
         with:
           context: .
           push: true
-          tags: bollojusandeepkumar25/devops-pipeline-project:latest
+          platforms: linux/amd64
+          tags: |
+            bollojusandeepkumar25/devops-pipeline-project:latest
+            bollojusandeepkumar25/devops-pipeline-project:${{ github.sha }}
 
