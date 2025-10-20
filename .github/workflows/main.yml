@@ -36,4 +36,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: bollojusandeepkumar25/devops-pipeline-project:latest
+          tags: ${{ env.IMAGE_NAME }}:latest
