@@ -1,66 +1,49 @@
-name: CI/CD Pipeline
+name: Automated Build and Deploy
 
-# Run the workflow when code is pushed to the "main" branch
+# [span_0](start_span)Trigger on push to the main branch[span_0](end_span)
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  build:
+  [span_1](start_span)build-and-push: # Define the single job for build and deployment[span_1](end_span)
     runs-on: ubuntu-latest
 
+    env:
+      # Use the DockerHub username for the image name
+      IMAGE_NAME: bollojusandeepkumar25/devops-pipeline-project
+
     steps:
-      # Step 1: Checkout code from your repo
-      - name: Checkout code
+      # [span_2](start_span)Get the code[span_2](end_span)
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Install Node.js
+      # Set up Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      # Step 3: Install dependencies
-      - name: Install dependencies
+      # Install dependencies
+      - name: Install Dependencies
         run: npm install
 
-      # Step 4: Run tests (skip if none)
-      - name: Run tests
+      # Run the test step
+      - name: Run Tests
         run: npm test || echo "No tests found"
 
-  docker:
-    runs-on: ubuntu-latest
-    needs: build  # wait until build job finishes
-
-    steps:
-      # Step 1: Checkout code again for Docker context
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      # Step 2: Log in to DockerHub
+      # Login to DockerHub using secrets
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
           username: bollojusandeepkumar25
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      # Step 3: Build and push Docker image
-      - name: Build and Push Docker image
+      # [span_5](start_span)Build and Push the Docker image[span_5](end_span)
+      - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: bollojusandeepkumar25/devops-pipeline-project:latest
-
-
-
-
-
-
-
-
-
-
-
-
+          tags: ${{ env.IMAGE_NAME }}:latest
 
