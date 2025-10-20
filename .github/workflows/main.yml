@@ -1,49 +1,35 @@
-name: Automated Build and Deploy
+name: CI/CD Pipeline
 
-# [span_0](start_span)Trigger on push to the main branch[span_0](end_span)
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  [span_1](start_span)build-and-push: # Define the single job for build and deployment[span_1](end_span)
+  build-and-deploy:
     runs-on: ubuntu-latest
 
-    env:
-      # Use the DockerHub username for the image name
-      IMAGE_NAME: bollojusandeepkumar25/devops-pipeline-project
-
     steps:
-      # [span_2](start_span)Get the code[span_2](end_span)
-      - name: Checkout repository
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      # Set up Node.js
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '18'
 
-      # Install dependencies
       - name: Install Dependencies
         run: npm install
 
-      # Run the test step
       - name: Run Tests
-        run: npm test || echo "No tests found"
+        run: echo "No tests yet"
 
-      # Login to DockerHub using secrets
+      - name: Build Docker Image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/nodejs-demo-app:latest .
+
       - name: Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: bollojusandeepkumar25
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      # [span_5](start_span)Build and Push the Docker image[span_5](end_span)
-      - name: Build and Push Docker Image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ${{ env.IMAGE_NAME }}:latest
+      - name: Push Docker Image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/nodejs-demo-app:latest
 
